@@ -3,7 +3,7 @@
   become: true
   kube_toolbox:
     module_name: kubeadm
-    module_args: "reset -f"
+    module_args: "reset --cri-socket /var/run/cri-dockerd.sock -f"
   when:
     - inventory_hostname in groups['kubernetes']
 
