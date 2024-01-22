@@ -38,7 +38,7 @@
     module_name: kubeadm
     module_args: init
     module_extra_vars:
-      cri-socket: "{{ '' if master_runtime_type == 'docker' else '/run/containerd/containerd.sock' }}"
+      cri-socket: "/var/run/cri-dockerd.sock"
       image-repository: "{{ image_repository }}"
       kubernetes-version: "{{ kubernetes_version }}"
       pod-network-cidr: "{{ cluster_cidr }}"
@@ -85,7 +85,7 @@
 - name: Add the rest of master nodes into highly available clusters
   kube_toolbox:
     module_name: kubeadm
-    module_args: "join {{ kubeconfig.apiserver | to_socket(kube_group=item.key) }} --control-plane"
+    module_args: "join {{ kubeconfig.apiserver | to_socket(kube_group=item.key) }} --cri-socket /var/run/cri-dockerd.sock --control-plane"
     module_extra_vars:
       token: "{{ kubeconfig.token }}"
       discovery-token-ca-cert-hash: "{{ kubeconfig.token_ca_cert_hash }}"
@@ -99,7 +99,7 @@
 - name: Add kube nodes into kubernetes cluster by runtime
   kube_toolbox:
     module_name: kubeadm
-    module_args: "join {{ kubeconfig.apiserver | to_socket(kube_group=item.key) }}"
+    module_args: "join {{ kubeconfig.apiserver | to_socket(kube_group=item.key) }} --cri-socket /var/run/cri-dockerd.sock"
     module_extra_vars:
       token: "{{ kubeconfig.token }}"
       discovery-token-ca-cert-hash: "{{ kubeconfig.token_ca_cert_hash }}"
