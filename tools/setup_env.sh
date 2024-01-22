@@ -62,7 +62,7 @@ function ensure_python3_installed {
 }
 
 function prep_work {
-    if is_rocky; then
+    if is_rocky || is_centos; then
         if [[ "$(systemctl is-enabled firewalld)" == "active" ]]; then
             systemctl disable firewalld
         fi
